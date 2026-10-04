@@ -1,6 +1,6 @@
 // 40 s vertical motion piece — deterministic draw(t) so it can be rendered frame by frame.
 const W = 1080, H = 1920, DUR = 40;
-const C = { bg: '#F4F1EA', ink: '#1F1F1F', mute: '#BDB5A6', soft: '#E4DDCF', acc: '#E85D3A' };
+const C = { bg: '#F4F1EA', ink: '#1F1F1F', mute: '#BDB5A6', soft: '#E4DDCF', acc: '#2D6CDF' };
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
 
@@ -21,7 +21,7 @@ const L = { thigh: 72, shin: 72, body: 150, up: 64, fore: 60, head: 38, neck: 46
 
 function base() {
   return { x: 540, lean: 0, armL: [-0.18, 0.05], armR: [0.18, -0.05], legL: [-0.13, 0], legR: [0.13, 0],
-    look: 0, lookY: 0, alpha: 1, smile: 0, bob: 0, tilt: 0, dash: 0, scale: 1 };
+    look: 0, lookY: 0, alpha: 1, smile: 0, bob: 0, tilt: 0, dash: 0, scale: 1, jy: 0 };
 }
 function mixPose(a, b, w) {
   if (w <= 0) return a;
@@ -48,14 +48,14 @@ function handPos(p, side) {
   const a = side < 0 ? p.armL : p.armR;
   const [, , hx, hy] = limb(sh[0], sh[1], a[0], a[1], L.up, L.fore);
   const s = S * p.scale;
-  return [p.x + hx * s, GROUND + hy * s];
+  return [p.x + hx * s, GROUND + p.jy + hy * s];
 }
 function figure(p, t) {
   if (p.alpha <= 0.002) return;
   const s = S * p.scale;
   ctx.save();
   ctx.globalAlpha = p.alpha;
-  ctx.translate(p.x, GROUND);
+  ctx.translate(p.x, GROUND + p.jy);
   ctx.scale(s, s);
   ctx.strokeStyle = C.ink; ctx.lineWidth = 7.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   if (p.dash > 0.01) ctx.setLineDash([1, 4 + 14 * p.dash]);
@@ -81,7 +81,7 @@ function figure(p, t) {
 }
 
 // ---------- figure choreography ----------
-const xKeys = [[0, -170], [1.9, 540], [17.0, 540], [17.9, 730], [23.3, 730], [24.2, 540], [33.4, 540], [34.2, 300], [40, 300]];
+const xKeys = [[0, -170], [1.4, 540], [17.0, 540], [17.6, 760], [23.3, 760], [23.9, 540], [33.4, 540], [34.0, 300], [40, 300]];
 function xAt(t) {
   for (let i = 0; i < xKeys.length - 1; i++) {
     const [t0, x0] = xKeys[i], [t1, x1] = xKeys[i + 1];
@@ -93,29 +93,43 @@ function poseAt(t) {
   let p = base();
   p.x = xAt(t);
   p.bob = Math.sin(t * 2.2) * 1.2;
-  // walking driven by real displacement so feet never slide
+  p.bob = Math.sin(t * 2.6) * 2.2;
+  p.tilt = Math.sin(t * 1.7) * 0.04;
+  // walking / running driven by real displacement so feet never slide
   const v = (xAt(t + 0.02) - xAt(t - 0.02)) / 0.04;
-  const wk = clamp(Math.abs(v) / 260);
+  const dir = Math.sign(v) || 1;
+  const wk = clamp(Math.abs(v) / 200), run = clamp((Math.abs(v) - 280) / 260);
   if (wk > 0) {
-    const ph = p.x / 34;
-    const sw = Math.sin(ph) * 0.42 * wk;
-    p.legL = [-0.06 + sw, Math.max(0, -Math.sin(ph)) * 0.35 * wk];
-    p.legR = [0.06 - sw, Math.max(0, Math.sin(ph)) * 0.35 * wk];
-    p.armL = [-0.15 - sw * 0.7, 0.15];
-    p.armR = [0.15 + sw * 0.7, -0.15];
-    p.bob += -Math.abs(Math.cos(ph)) * 5 * wk;
-    p.look = Math.sign(v) * 0.6 * wk;
+    const ph = p.x / lerp(34, 52, run);
+    const amp = lerp(0.42, 0.8, run) * wk;
+    const sw = Math.sin(ph) * amp;
+    const knee = lerp(0.35, 1.1, run) * wk;
+    p.legL = [-0.06 + sw, -dir * Math.max(0, -Math.sin(ph)) * knee];
+    p.legR = [0.06 - sw, -dir * Math.max(0, Math.sin(ph)) * knee];
+    p.armL = [-0.15 - sw * 0.8, lerp(0.15, dir * 1.5, run)];
+    p.armR = [0.15 + sw * 0.8, lerp(-0.15, dir * 1.5, run)];
+    p.lean = dir * 0.2 * run;
+    p.bob += -Math.abs(Math.cos(ph)) * lerp(5, 14, run) * wk;
+    p.look = dir * 0.7 * wk;
   }
+  // little hops that give the character energy
+  const hop = (t0, d, h) => (t > t0 && t < t0 + d ? -h * Math.sin(Math.PI * (t - t0) / d) : 0);
+  p.jy = hop(1.4, 0.35, 40) + hop(21.0, 0.3, 45) + hop(28.0, 0.4, 90) + hop(30.7, 0.35, 50) + hop(36.9, 0.35, 70) + hop(37.3, 0.3, 40) + hop(17.65, 0.25, 25) + hop(23.95, 0.25, 25) + hop(34.05, 0.25, 25);
+  // reappearing: drops back in from above
+  if (t > 26.6 && t < 27.2) p.jy += -260 * Math.pow(1 - eout(prog(t, 26.6, 26.95)), 2) + (t > 26.95 ? -30 * Math.sin(Math.PI * prog(t, 26.95, 27.2)) : 0);
+  // tuck legs while airborne
+  const air = clamp(-p.jy / 60);
+  if (air > 0) { p.legL = mixPose({ a: p.legL }, { a: [-0.32, -0.3] }, air * 0.8).a; p.legR = mixPose({ a: p.legR }, { a: [0.32, 0.3] }, air * 0.8).a; }
 
   // 1 — hello wave
   { const w = eout(prog(t, 2.0, 2.4)) * (1 - eio(prog(t, 3.9, 4.4)));
-    const q = { ...p, armR: [2.15, 0.55 + 0.45 * Math.sin(t * 11)], smile: 1, tilt: 0.06, look: 0 };
+    const q = { ...p, armR: [2.15, 0.55 + 0.55 * Math.sin(t * 13)], armL: [-0.35, -0.2], smile: 1, tilt: 0.1 * Math.sin(t * 4), look: 0, bob: p.bob + 3 * Math.sin(t * 13) };
     p = mixPose(p, q, w); }
   // 2 — typing behind laptop
   { const w = eout(prog(t, 4.6, 5.1)) * (1 - eio(prog(t, 10.6, 11.1)));
     const glance = eio(prog(t, 8.6, 9.0)) * (1 - eio(prog(t, 9.6, 10.0)));
     const q = { ...p, armL: [-0.34, 0.8 + 0.18 * Math.sin(t * 24)], armR: [0.34, -0.8 - 0.18 * Math.sin(t * 24 + 1.7)],
-      lookY: lerp(0.7, -0.2, glance), look: lerp(Math.sin(t * 3) * 0.2, 0.9, glance), lean: 0.03 * Math.sin(t * 12) };
+      lookY: lerp(0.7, -0.2, glance), look: lerp(Math.sin(t * 3) * 0.35, 0.9, glance), lean: 0.05 * Math.sin(t * 12), tilt: 0.08 * Math.sin(t * 6), bob: p.bob + 3 * Math.sin(t * 24) };
     p = mixPose(p, q, w); }
   // 3 — juggling
   { const w = eout(prog(t, 11.0, 11.5)) * (1 - eio(prog(t, 16.6, 17.1)));
@@ -143,7 +157,7 @@ function poseAt(t) {
     p = mixPose(p, { ...p, armL: [-1.05, -0.35], armR: [1.05, 0.35], smile: 1, look: 0, lookY: 0 }, pr); }
   // 7 — point to the comment bubble
   { const w = eout(prog(t, 34.1, 34.6));
-    const q = { ...p, armR: [2.05, 0.15 + 0.05 * Math.sin(t * 4)], look: 0.9, lookY: -0.5, smile: 1, lean: 0.05 };
+    const q = { ...p, armR: [2.05, 0.15 + 0.12 * Math.sin(t * 6)], armL: [-0.3, 0.1 * Math.sin(t * 3)], look: 0.9, lookY: -0.5, smile: 1, lean: 0.05 + 0.03 * Math.sin(t * 3), bob: p.bob + 4 * Math.sin(t * 6) };
     p = mixPose(p, q, w);
     const nod = eout(prog(t, 37.6, 38.0));
     p = mixPose(p, { ...p, look: 0, lookY: 0 }, nod); }
@@ -350,11 +364,11 @@ function bulb(t, p) {
   if (t < 28.0 || a <= 0) return;
   const s = popScale(t, 28.0);
   const { hd } = skeleton(p);
-  const cx = p.x + hd[0] * S + 10, cy = GROUND + hd[1] * S - 170 + Math.sin(t * 3) * 6;
+  const cx = p.x + hd[0] * S + 10, cy = GROUND + p.jy * 0.6 + hd[1] * S - 190 + Math.sin(t * 3) * 6;
   ctx.save(); ctx.globalAlpha = a; ctx.translate(cx, cy); ctx.scale(s, s);
   // glow
   const g = ctx.createRadialGradient(0, 0, 10, 0, 0, 120);
-  g.addColorStop(0, 'rgba(232,93,58,0.28)'); g.addColorStop(1, 'rgba(232,93,58,0)');
+  g.addColorStop(0, 'rgba(45,108,223,0.28)'); g.addColorStop(1, 'rgba(45,108,223,0)');
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, 120, 0, Math.PI * 2); ctx.fill();
   ctx.strokeStyle = C.ink; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   ctx.beginPath(); ctx.arc(0, 0, 42, Math.PI * 0.78, Math.PI * 2.22); ctx.lineTo(16, 58); ctx.lineTo(-16, 58); ctx.closePath();

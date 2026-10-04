@@ -54,6 +54,8 @@ whoosh(24.6, 1.2, 0.04); pop(26.65, 700, 1000, 0.14);                           
 ding(28.0);                                                                                // idea
 whoosh(30.7, 1.0, 0.04); ding(31.6, 0.05);                                                 // frame
 pop(34.0, 800, 500, 0.15); pop(36.9, 1000, 700, 0.15);                                     // bubble, heart
+for (const tr of [0.1, 17.0, 23.3, 33.4]) whoosh(tr, 0.6, 0.06);                         // runs
+for (const [th, d] of [[1.4, 0.35], [21.0, 0.3], [28.0, 0.4], [30.7, 0.35], [36.9, 0.35], [37.3, 0.3]]) { pop(th, 300, 520, 0.05); pop(th + d, 260, 160, 0.07); } // hops
 // simple stereo delay for space
 const d = Math.floor(0.47 * SR);
 for (let i = d; i < N; i++) { Lc[i] += Rc[i - d] * 0.22; Rc[i] += Lc[i - d] * 0.22; }
