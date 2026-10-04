@@ -1,5 +1,5 @@
 // 40 s vertical motion piece — deterministic draw(t) so it can be rendered frame by frame.
-const W = 1080, H = 1920, DUR = 40;
+const W = 1080, H = 1920, DUR = 32;
 const C = { bg: '#F4F1EA', ink: '#1F1F1F', mute: '#BDB5A6', soft: '#E4DDCF', acc: '#2D6CDF' };
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
@@ -81,7 +81,7 @@ function figure(p, t) {
 }
 
 // ---------- figure choreography ----------
-const xKeys = [[0, -170], [1.4, 540], [17.0, 540], [17.6, 760], [23.3, 760], [23.9, 540], [33.4, 540], [34.0, 300], [40, 300]];
+const xKeys = [[0, -170], [0.95, 540], [13.1, 540], [13.6, 760], [17.5, 760], [18.0, 540], [24.9, 540], [25.4, 300], [32, 300]];
 function xAt(t) {
   for (let i = 0; i < xKeys.length - 1; i++) {
     const [t0, x0] = xKeys[i], [t1, x1] = xKeys[i + 1];
@@ -92,7 +92,6 @@ function xAt(t) {
 function poseAt(t) {
   let p = base();
   p.x = xAt(t);
-  p.bob = Math.sin(t * 2.2) * 1.2;
   p.bob = Math.sin(t * 2.6) * 2.2;
   p.tilt = Math.sin(t * 1.7) * 0.04;
   // walking / running driven by real displacement so feet never slide
@@ -114,58 +113,59 @@ function poseAt(t) {
   }
   // little hops that give the character energy
   const hop = (t0, d, h) => (t > t0 && t < t0 + d ? -h * Math.sin(Math.PI * (t - t0) / d) : 0);
-  p.jy = hop(1.4, 0.35, 40) + hop(21.0, 0.3, 45) + hop(28.0, 0.4, 90) + hop(30.7, 0.35, 50) + hop(36.9, 0.35, 70) + hop(37.3, 0.3, 40) + hop(17.65, 0.25, 25) + hop(23.95, 0.25, 25) + hop(34.05, 0.25, 25);
+  p.jy = hop(0.95, 0.35, 40) + hop(16.25, 0.3, 45) + hop(20.5, 0.4, 90) + hop(23.0, 0.35, 50) + hop(27.3, 0.35, 70) + hop(27.7, 0.3, 40) + hop(28.9, 0.35, 45) + hop(13.65, 0.25, 25) + hop(18.05, 0.25, 25) + hop(25.45, 0.25, 25);
   // reappearing: drops back in from above
-  if (t > 26.6 && t < 27.2) p.jy += -260 * Math.pow(1 - eout(prog(t, 26.6, 26.95)), 2) + (t > 26.95 ? -30 * Math.sin(Math.PI * prog(t, 26.95, 27.2)) : 0);
+  if (t > 19.95 && t < 20.55) p.jy += -260 * Math.pow(1 - eout(prog(t, 19.95, 20.3)), 2) + (t > 20.3 ? -30 * Math.sin(Math.PI * prog(t, 20.3, 20.55)) : 0);
   // tuck legs while airborne
   const air = clamp(-p.jy / 60);
   if (air > 0) { p.legL = mixPose({ a: p.legL }, { a: [-0.32, -0.3] }, air * 0.8).a; p.legR = mixPose({ a: p.legR }, { a: [0.32, 0.3] }, air * 0.8).a; }
 
   // 1 — hello wave
-  { const w = eout(prog(t, 2.0, 2.4)) * (1 - eio(prog(t, 3.9, 4.4)));
+  { const w = eout(prog(t, 0.95, 1.3)) * (1 - eio(prog(t, 3.1, 3.5))) + eout(prog(t, 28.5, 28.9)) * (1 - eio(prog(t, 31.0, 31.4)));
     const q = { ...p, armR: [2.15, 0.55 + 0.55 * Math.sin(t * 13)], armL: [-0.35, -0.2], smile: 1, tilt: 0.1 * Math.sin(t * 4), look: 0, bob: p.bob + 3 * Math.sin(t * 13) };
     p = mixPose(p, q, w); }
   // 2 — typing behind laptop
-  { const w = eout(prog(t, 4.6, 5.1)) * (1 - eio(prog(t, 10.6, 11.1)));
-    const glance = eio(prog(t, 8.6, 9.0)) * (1 - eio(prog(t, 9.6, 10.0)));
+  { const w = eout(prog(t, 3.5, 4.0)) * (1 - eio(prog(t, 10.0, 10.5)));
+    const glance = eio(prog(t, 7.6, 8.0)) * (1 - eio(prog(t, 9.8, 10.1)));
     const q = { ...p, armL: [-0.34, 0.8 + 0.18 * Math.sin(t * 24)], armR: [0.34, -0.8 - 0.18 * Math.sin(t * 24 + 1.7)],
       lookY: lerp(0.7, -0.2, glance), look: lerp(Math.sin(t * 3) * 0.35, 0.9, glance), lean: 0.05 * Math.sin(t * 12), tilt: 0.08 * Math.sin(t * 6), bob: p.bob + 3 * Math.sin(t * 24) };
     p = mixPose(p, q, w); }
   // 3 — juggling
-  { const w = eout(prog(t, 11.0, 11.5)) * (1 - eio(prog(t, 16.6, 17.1)));
+  { const w = eout(prog(t, 10.4, 10.8)) * (1 - eio(prog(t, 12.9, 13.3)));
     const j = Math.sin(t * Math.PI * 2 / JUG_PERIOD * 2);
     const q = { ...p, armL: [-0.55, -(1.25 + 0.25 * j)], armR: [0.55, 1.25 - 0.25 * j], lookY: -0.8, look: 0.3 * Math.sin(t * 5.2), bob: p.bob + j * 2 };
     p = mixPose(p, q, w); }
   // 4 — looks at camera, then shrug
-  { const w = eout(prog(t, 17.9, 18.3)) * (1 - eio(prog(t, 23.0, 23.4)));
+  { const w = eout(prog(t, 13.6, 14.0)) * (1 - eio(prog(t, 17.3, 17.7)));
     p = mixPose(p, { ...p, look: -1, lookY: 0.1 }, w);
-    const s = eout(prog(t, 20.9, 21.3)) * (1 - eio(prog(t, 22.7, 23.2)));
+    const s = eout(prog(t, 16.2, 16.6)) * (1 - eio(prog(t, 17.2, 17.6)));
     const q = { ...p, armL: [-0.75, -1.85], armR: [0.75, 1.85], tilt: 0.12, look: 0, lookY: 0.2, bob: p.bob - 4 };
     p = mixPose(p, q, s); }
   // 5 — disappearing / coming back
-  { const fade = eio(prog(t, 24.6, 25.9)) * (1 - prog(t, 26.6, 26.9));
+  { const fade = eio(prog(t, 18.9, 19.7)) * (1 - prog(t, 19.95, 20.15));
     p.alpha = lerp(1, 0.14, fade);
     p.dash = fade;
-    if (t > 26.6 && t < 27.6) p.scale = lerp(0.7, 1, back(prog(t, 26.6, 27.3)));
-    const w = eout(prog(t, 23.6, 24.2)) * (1 - eio(prog(t, 26.6, 26.9)));
+    if (t > 19.95 && t < 20.8) p.scale = lerp(0.7, 1, back(prog(t, 19.95, 20.65)));
+    const w = eout(prog(t, 17.9, 18.3)) * (1 - eio(prog(t, 19.9, 20.1)));
     p = mixPose(p, { ...p, lookY: 0.6, tilt: -0.08, armL: [-0.08, 0], armR: [0.08, 0] }, w);
-    if (t > 26.9 && t < 27.9) p.smile = 1 - prog(t, 27.4, 27.9); }
+    if (t > 20.2 && t < 21.0) p.smile = 1 - prog(t, 20.6, 21.0); }
   // 6 — idea, then presenting the new format
-  { const th = eout(prog(t, 27.4, 27.9)) * (1 - eio(prog(t, 30.3, 30.7)));
+  { const th = eout(prog(t, 20.4, 20.8)) * (1 - eio(prog(t, 22.6, 22.95)));
     p = mixPose(p, { ...p, armR: [0.3, 2.6], look: 0.5, lookY: -0.7, tilt: -0.08 }, th);
-    const pr = eout(prog(t, 30.6, 31.1)) * (1 - eio(prog(t, 33.1, 33.5)));
+    const pr = eout(prog(t, 22.95, 23.4)) * (1 - eio(prog(t, 24.8, 25.2)));
     p = mixPose(p, { ...p, armL: [-1.05, -0.35], armR: [1.05, 0.35], smile: 1, look: 0, lookY: 0 }, pr); }
   // 7 — point to the comment bubble
-  { const w = eout(prog(t, 34.1, 34.6));
+  { const w = eout(prog(t, 25.5, 25.9)) * (1 - eio(prog(t, 28.3, 28.6)));
     const q = { ...p, armR: [2.05, 0.15 + 0.12 * Math.sin(t * 6)], armL: [-0.3, 0.1 * Math.sin(t * 3)], look: 0.9, lookY: -0.5, smile: 1, lean: 0.05 + 0.03 * Math.sin(t * 3), bob: p.bob + 4 * Math.sin(t * 6) };
     p = mixPose(p, q, w);
-    const nod = eout(prog(t, 37.6, 38.0));
+    const nod = eout(prog(t, 28.3, 28.6));
     p = mixPose(p, { ...p, look: 0, lookY: 0 }, nod); }
   return p;
 }
 
 // ---------- captions (word-by-word reveal, *word* = accent) ----------
-function caption(t, a, b, text, y = 470) {
+function caption(t, times, b, text, y = 470) {
+  const a = times[0] - 0.12;
   if (t < a || t > b) return;
   const lines = text.split('\n').map(l => l.split(' ').map(w => ({ acc: /^\*.*\*$/.test(w), w: w.replace(/\*/g, '') })));
   let size = 68;
@@ -182,7 +182,8 @@ function caption(t, a, b, text, y = 470) {
     let x = W / 2 - total / 2;
     const ly = y - ((lines.length - 1) * lh) / 2 + li * lh;
     for (const wd of ws) {
-      const k = eout(prog(t, a + wi * 0.07, a + wi * 0.07 + 0.5));
+      const st = (times[wi] ?? times[times.length - 1]) - 0.12;
+      const k = eout(prog(t, st, st + 0.4));
       ctx.globalAlpha = k * out;
       ctx.fillStyle = wd.acc ? C.acc : C.ink;
       ctx.fillText(wd.w, x, ly + (1 - k) * 30 - (1 - out) * 16);
@@ -203,9 +204,9 @@ function ground(p) {
 }
 
 function desk(t) {
-  const a = env(t, 4.5, 11.1, 0.5, 0.45);
+  const a = env(t, 3.4, 10.5, 0.5, 0.45);
   withAlpha(a, () => {
-    const dy = (1 - eout(prog(t, 4.5, 5.0))) * 40;
+    const dy = (1 - eout(prog(t, 3.4, 3.9))) * 40;
     ctx.save(); ctx.translate(0, dy);
     const top = 1205;
     ctx.fillStyle = C.bg; ctx.fillRect(250, top, 580, GROUND - top + 2);
@@ -234,11 +235,11 @@ const CARDS = [
   [205, 760, -7], [875, 720, 6], [170, 960, 5], [910, 930, -4], [250, 1140, -3],
   [850, 1130, 7], [300, 640, 9], [790, 600, -8], [140, 1300, -6]
 ];
-const CARD_T0 = 5.3, CARD_DT = 0.52;
+const CARD_TIMES = [4.3, 4.9, 5.5, 6.25, 7.68, 8.44, 8.94, 9.26, 9.7];
 function cards(t) {
-  const out = 1 - eio(prog(t, 10.6, 11.1));
+  const out = 1 - eio(prog(t, 10.0, 10.5));
   CARDS.forEach(([x, y, r], i) => {
-    const at = CARD_T0 + i * CARD_DT;
+    const at = CARD_TIMES[i] - 0.05;
     if (t < at) return;
     const s = popScale(t, at) * out;
     if (s <= 0.01) return;
@@ -263,7 +264,7 @@ function cards(t) {
 // juggling balls
 const JUG_PERIOD = 1.5;
 function balls(t, p) {
-  const a = env(t, 11.1, 16.9, 0.4, 0.4);
+  const a = env(t, 10.5, 13.2, 0.4, 0.35);
   if (a <= 0) return;
   const hl = handPos(p, -1), hr = handPos(p, 1);
   for (let i = 0; i < 3; i++) {
@@ -282,9 +283,9 @@ function balls(t, p) {
 
 // camera on tripod + editing timeline
 function camera(t) {
-  const a = env(t, 17.2, 23.6, 0.5, 0.45);
+  const a = env(t, 13.2, 17.8, 0.5, 0.45);
   withAlpha(a, () => {
-    const dy = (1 - eout(prog(t, 17.2, 17.8))) * 50;
+    const dy = (1 - eout(prog(t, 13.2, 13.7))) * 50;
     ctx.save(); ctx.translate(0, dy);
     ctx.strokeStyle = C.ink; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     const ax = 300, ay = 1150;
@@ -295,16 +296,16 @@ function camera(t) {
     rrect(390, 1060, 52, 62, 8); ctx.fill(); ctx.stroke();
     rrect(228, 1004, 64, 26, 6); ctx.fill(); ctx.stroke();
     // REC light: blinks, then goes dark
-    const on = t < 19.6 ? (Math.floor(t * 2) % 2 === 0 ? 1 : 0.25) : 0;
+    const on = t < 14.85 ? (Math.floor(t * 2) % 2 === 0 ? 1 : 0.25) : 0;
     ctx.fillStyle = on > 0 ? C.acc : C.bg;
     ctx.globalAlpha *= on > 0 ? on : 1;
     ctx.beginPath(); ctx.arc(232, 1062, 11, 0, Math.PI * 2); ctx.fill();
     if (on === 0) { ctx.lineWidth = 4; ctx.strokeStyle = C.mute; ctx.stroke(); }
     ctx.restore();
     // "zz" once the camera is idle
-    const z = prog(t, 19.8, 20.4);
+    const z = prog(t, 15.1, 15.6);
     if (z > 0) {
-      ctx.save(); ctx.globalAlpha *= z * (1 - prog(t, 23.0, 23.4)); ctx.fillStyle = C.mute;
+      ctx.save(); ctx.globalAlpha *= z * (1 - prog(t, 17.3, 17.7)); ctx.fillStyle = C.mute;
       ctx.font = '500 40px Poppins'; ctx.textBaseline = 'middle';
       const f = (t * 0.8) % 1;
       ctx.fillText('z', 400 + f * 20, 990 - f * 40);
@@ -313,14 +314,14 @@ function camera(t) {
     }
   });
   // timeline panel
-  const b = env(t, 20.3, 23.6, 0.45, 0.45);
+  const b = env(t, 15.6, 17.8, 0.4, 0.4);
   withAlpha(b, () => {
-    const dy = (1 - eout(prog(t, 20.3, 20.8))) * 40;
+    const dy = (1 - eout(prog(t, 15.6, 16.0))) * 40;
     ctx.save(); ctx.translate(0, dy);
     rrect(140, 1480, 800, 230, 26); ctx.fillStyle = '#FBFAF6'; ctx.fill();
     ctx.strokeStyle = C.ink; ctx.lineWidth = 6; ctx.stroke();
     const tracks = [[[180, 220], [420, 160], [600, 280]], [[180, 140], [340, 300], [660, 220]], [[180, 380], [580, 300]]];
-    const shrink = eio(prog(t, 21.0, 22.6));
+    const shrink = eio(prog(t, 16.2, 17.3));
     tracks.forEach((clips, r) => {
       clips.forEach(([x, w], c) => {
         const k = clamp(1 - shrink * 1.4 + (c * 0.12 + r * 0.08));
@@ -333,7 +334,7 @@ function camera(t) {
       });
     });
     ctx.globalAlpha = 1;
-    const ph = 180 + 240 * eout(prog(t, 20.5, 21.4));
+    const ph = 180 + 240 * eout(prog(t, 15.7, 16.3));
     ctx.strokeStyle = C.ink; ctx.lineWidth = 5;
     ctx.beginPath(); ctx.moveTo(ph, 1500); ctx.lineTo(ph, 1690); ctx.stroke();
     ctx.fillStyle = C.ink; ctx.beginPath(); ctx.moveTo(ph - 12, 1494); ctx.lineTo(ph + 12, 1494); ctx.lineTo(ph, 1510); ctx.fill();
@@ -343,10 +344,10 @@ function camera(t) {
 
 // fading particles while the figure disappears
 function particles(t, p) {
-  const a = env(t, 24.5, 26.9, 0.5, 0.4);
+  const a = env(t, 18.8, 20.1, 0.4, 0.3);
   if (a <= 0) return;
   for (let i = 0; i < 26; i++) {
-    const life = 1.6, st = 24.5 + rnd(i) * 1.8;
+    const life = 1.1, st = 18.8 + rnd(i) * 1.0;
     const k = (t - st) / life;
     if (k < 0 || k > 1) continue;
     const x = p.x + (rnd(i + 50) - 0.5) * 220;
@@ -360,9 +361,9 @@ function particles(t, p) {
 
 // lightbulb
 function bulb(t, p) {
-  const a = 1 - eio(prog(t, 30.3, 30.7));
-  if (t < 28.0 || a <= 0) return;
-  const s = popScale(t, 28.0);
+  const a = 1 - eio(prog(t, 22.6, 22.95));
+  if (t < 20.5 || a <= 0) return;
+  const s = popScale(t, 20.5);
   const { hd } = skeleton(p);
   const cx = p.x + hd[0] * S + 10, cy = GROUND + p.jy * 0.6 + hd[1] * S - 190 + Math.sin(t * 3) * 6;
   ctx.save(); ctx.globalAlpha = a; ctx.translate(cx, cy); ctx.scale(s, s);
@@ -375,7 +376,7 @@ function bulb(t, p) {
   ctx.fillStyle = C.acc; ctx.fill(); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(-14, 72); ctx.lineTo(14, 72); ctx.stroke();
   // rays
-  const r = eout(prog(t, 28.2, 28.7));
+  const r = eout(prog(t, 20.7, 21.2));
   ctx.strokeStyle = C.acc; ctx.lineWidth = 7;
   for (let i = 0; i < 7; i++) {
     const ang = -Math.PI / 2 + (i - 3) * 0.42;
@@ -387,8 +388,8 @@ function bulb(t, p) {
 
 // "this format" frame drawn around the figure
 function frame(t) {
-  const a = 1 - eio(prog(t, 33.2, 33.7));
-  const d = eio(prog(t, 30.7, 31.8));
+  const a = 1 - eio(prog(t, 24.9, 25.3));
+  const d = eio(prog(t, 22.95, 23.8));
   if (d <= 0 || a <= 0) return;
   const x = 250, y = 760, w = 580, h = 700, r = 40;
   const per = 2 * (w + h) - 8 * r + 2 * Math.PI * r;
@@ -398,8 +399,8 @@ function frame(t) {
   rrect(x, y, w, h, r); ctx.stroke();
   ctx.setLineDash([]);
   // corner sparkles
-  const sp = popScale(t, 31.6);
-  if (t > 31.6) {
+  const sp = popScale(t, 23.6);
+  if (t > 23.6) {
     for (const [sx, sy, k] of [[x + w + 6, y - 6, 1], [x - 10, y + h + 10, 0.7]]) {
       ctx.save(); ctx.translate(sx, sy); ctx.scale(sp * k, sp * k); ctx.rotate(t * 0.8);
       ctx.fillStyle = C.acc; ctx.beginPath();
@@ -412,8 +413,8 @@ function frame(t) {
 
 // comment bubble + heart + arrow
 function comment(t) {
-  if (t < 34.0) return;
-  const s = popScale(t, 34.0);
+  if (t < 25.5) return;
+  const s = popScale(t, 25.5);
   const bx = 560, by = 790, bw = 420, bh = 250;
   ctx.save();
   ctx.translate(bx + bw / 2, by + bh / 2); ctx.scale(s, s); ctx.translate(-(bx + bw / 2), -(by + bh / 2));
@@ -428,7 +429,7 @@ function comment(t) {
   // avatar
   ctx.beginPath(); ctx.arc(bx + 62, by + 66, 26, 0, Math.PI * 2); ctx.fillStyle = C.soft; ctx.fill();
   // typing dots → message lines
-  const typed = prog(t, 36.0, 36.3);
+  const typed = prog(t, 26.1, 26.4);
   if (typed < 1) {
     ctx.globalAlpha = 1 - typed;
     for (let i = 0; i < 3; i++) {
@@ -441,15 +442,15 @@ function comment(t) {
     ctx.lineWidth = 12;
     const lines = [[bx + 110, by + 66, 200, C.ink], [bx + 40, by + 130, 330, C.mute], [bx + 40, by + 180, 230, C.mute]];
     lines.forEach(([lx, ly, lw, col], i) => {
-      const k = eout(prog(t, 36.0 + i * 0.18, 36.5 + i * 0.18));
+      const k = eout(prog(t, 26.1 + i * 0.18, 26.6 + i * 0.18));
       if (k <= 0) return;
       ctx.strokeStyle = col; ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx + lw * k, ly); ctx.stroke();
     });
   }
   ctx.restore();
   // heart
-  if (t > 36.9) {
-    const hs = popScale(t, 36.9) * (1 + 0.06 * Math.sin((t - 36.9) * 6));
+  if (t > 27.3) {
+    const hs = popScale(t, 27.3) * (1 + 0.06 * Math.sin((t - 27.3) * 6));
     ctx.save(); ctx.translate(bx + bw - 10, by + bh - 6); ctx.scale(hs, hs);
     ctx.fillStyle = C.acc; ctx.strokeStyle = C.bg; ctx.lineWidth = 8;
     ctx.beginPath();
@@ -460,7 +461,7 @@ function comment(t) {
     ctx.restore();
   }
   // arrow down toward the comments
-  const ar = eout(prog(t, 37.4, 37.9));
+  const ar = eout(prog(t, 26.8, 27.3));
   if (ar > 0) {
     const yy = 1560 + Math.sin(t * 5) * 14;
     ctx.save(); ctx.globalAlpha = ar;
@@ -491,19 +492,21 @@ function draw(t) {
   bulb(t, p);
   comment(t);
 
-  caption(t, 0.4, 4.4, 'Hey… ça fait un moment.');
-  caption(t, 4.7, 7.9, 'Ces derniers temps,\nj’ai été *débordé.*');
-  caption(t, 8.0, 11.0, 'Projets sur projets…');
-  caption(t, 11.3, 16.9, 'Je jongle avec\nmille choses à la fois.');
-  caption(t, 17.3, 20.3, 'Plus le temps\nde *filmer…*');
-  caption(t, 20.4, 23.4, '…ni de *monter.*');
-  caption(t, 23.7, 27.2, 'C’est pour ça\nque j’ai *disparu.*');
-  caption(t, 27.6, 30.6, 'Alors j’essaie\nun *nouveau* *format.*');
-  caption(t, 30.8, 33.5, 'Comme celui-ci.');
-  caption(t, 33.8, 39.5, 'Dites-moi en *commentaire*\nce que vous en pensez.');
+  // word times come from the voice-over transcription
+  caption(t, [0.98, 1.7, 1.88, 2.02, 2.08, 2.2], 3.4, 'Hey\u00A0! Ça fait un bon *moment\u00A0!*');
+  caption(t, [3.96, 4.24, 4.5, 5.7, 5.98, 6.22], 7.4, 'Ces derniers temps,\nj’ai été *débordé.*');
+  caption(t, [7.68, 8.44, 8.94, 9.26, 9.7], 10.6, 'Projet, projet, projet,\nencore *projet\u00A0!*');
+  caption(t, [10.94, 11.2, 11.6, 11.9, 12.18, 12.36, 12.48, 12.66], 13.7, 'Je jongle avec\nmille choses à la fois,');
+  caption(t, [14.06, 14.2, 14.38, 14.62, 14.82], 15.65, 'plus de temps\npour *filmer…*');
+  caption(t, [15.72, 15.98, 16.34], 17.8, '…ni pour *monter.*');
+  caption(t, [18.04, 18.24, 18.4, 18.56, 18.72, 19.04], 20.4, 'C’est pour ça\nque j’ai *disparu.*');
+  caption(t, [20.48, 20.78, 21.4, 21.88, 21.96, 22.46], 22.95, 'Alors j’essaie avec\nun *nouveau* *format,*');
+  caption(t, [22.98, 23.54], 25.4, 'comme celui-ci.');
+  caption(t, [25.58, 25.92, 26.1, 26.72, 26.86, 27.04, 27.14, 27.36], 28.45, 'Dites-moi en *commentaire*\nce que vous en pensez.');
+  caption(t, [28.48, 28.54, 28.88], 31.5, 'À la *prochaine\u00A0!*');
 
   // soft fade in / out
-  const f = Math.max(1 - prog(t, 0, 0.35), prog(t, 39.4, 40));
+  const f = Math.max(1 - prog(t, 0, 0.3), prog(t, 31.4, 32));
   if (f > 0) { ctx.globalAlpha = f; ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
 }
 

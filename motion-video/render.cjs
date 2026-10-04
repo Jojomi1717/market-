@@ -16,7 +16,7 @@ const mode = process.argv[2] || 'stills';
     const ts = process.argv.slice(3).map(Number);
     for (const t of ts) require('fs').writeFileSync(`still_${t}.png`, await grab(t));
   } else {
-    const fps = 30, n = 40 * fps;
+    const fps = 30, n = Math.round((await page.evaluate(() => DUR)) * fps);
     const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(fps), '-i', '-',
       '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', 'video_silent.mp4'], { stdio: ['pipe', 'inherit', 'inherit'] });
     for (let i = 0; i < n; i++) {

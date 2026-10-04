@@ -1,6 +1,6 @@
 // Soft lo-fi-ish bed + UI sfx, synthesized, 40 s stereo 44.1 kHz
 const fs = require('fs');
-const SR = 44100, DUR = 40, N = SR * DUR;
+const SR = 44100, DUR = 32, N = SR * DUR;
 const Lc = new Float32Array(N), Rc = new Float32Array(N);
 const mf = m => 440 * Math.pow(2, (m - 69) / 12);
 const add = (t0, len, fn, gl = 1, gr = 1) => {
@@ -10,7 +10,7 @@ const add = (t0, len, fn, gl = 1, gr = 1) => {
 const bar = 2.5, eighth = bar / 8;
 const chords = [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59]]; // Fmaj7 Em7 Dm7 Cmaj7
 const pat = [0, 2, 3, 1, 2, 3, 1, 2];
-for (let b = 0; b < 16; b++) {
+for (let b = 0; b < 13; b++) {
   const ch = chords[b % 4], t0 = b * bar;
   // pad
   for (const m of ch) {
@@ -24,9 +24,9 @@ for (let b = 0; b < 16; b++) {
   const fb = mf(ch[0] - 12);
   add(t0, 2.2, t => 0.11 * Math.exp(-t * 1.4) * Math.min(1, t / 0.01) * Math.sin(2 * Math.PI * fb * t));
   // pluck arpeggio (starts after the intro bar)
-  if (b >= 1 && b < 16) {
+  if (b >= 1) {
     for (let k = 0; k < 8; k++) {
-      if (b === 15 && k > 3) break;
+      
       const m = ch[pat[k]] + 12, f = mf(m), pan = k % 2 ? 0.75 : 1.25;
       add(t0 + k * eighth, 1.2, t => {
         const e = Math.exp(-t * 6) * Math.min(1, t / 0.004);
@@ -35,7 +35,7 @@ for (let b = 0; b < 16; b++) {
     }
   }
   // soft shaker on offbeats
-  if (b >= 2 && b < 15) for (let k = 1; k < 8; k += 2) {
+  if (b >= 2 && b < 12) for (let k = 1; k < 8; k += 2) {
     let seed = b * 31 + k;
     add(t0 + k * eighth, 0.08, t => { seed = (seed * 16807) % 2147483647; return 0.012 * (seed / 2147483647 - 0.5) * Math.exp(-t * 60); }, 0.8, 1.2);
   }
@@ -47,15 +47,15 @@ const pop = (t0, f0 = 900, f1 = 450, g = 0.16) => add(t0, 0.18, t => {
 });
 const ding = (t0, g = 0.09) => add(t0, 1.6, t => g * Math.exp(-t * 3) * (Math.sin(2 * Math.PI * 1318.5 * t) + 0.6 * Math.sin(2 * Math.PI * 1975.5 * t)));
 const whoosh = (t0, len = 0.5, g = 0.05) => { let seed = Math.floor(t0 * 1000) + 7, lp = 0; add(t0, len, t => { seed = (seed * 16807) % 2147483647; const n = seed / 2147483647 - 0.5; lp += (n - lp) * 0.08; return g * 6 * lp * Math.sin(Math.PI * t / len); }); };
-for (let i = 0; i < 9; i++) pop(5.3 + i * 0.52, 900 + i * 40, 450 + i * 20, 0.13);      // cards
-for (let n = 0; n < 6; n++) for (let i = 0; i < 3; i++) for (const o of [0, 0.6]) { const tc = 11 + 1.5 * (n + o - i / 3); if (tc > 11.5 && tc < 16.5) pop(tc, 520, 360, 0.035); } // juggling catches
-whoosh(17.2); pop(19.6, 300, 180, 0.12);                                                   // camera / REC off
-whoosh(24.6, 1.2, 0.04); pop(26.65, 700, 1000, 0.14);                                      // disappear / reappear
-ding(28.0);                                                                                // idea
-whoosh(30.7, 1.0, 0.04); ding(31.6, 0.05);                                                 // frame
-pop(34.0, 800, 500, 0.15); pop(36.9, 1000, 700, 0.15);                                     // bubble, heart
-for (const tr of [0.1, 17.0, 23.3, 33.4]) whoosh(tr, 0.6, 0.06);                         // runs
-for (const [th, d] of [[1.4, 0.35], [21.0, 0.3], [28.0, 0.4], [30.7, 0.35], [36.9, 0.35], [37.3, 0.3]]) { pop(th, 300, 520, 0.05); pop(th + d, 260, 160, 0.07); } // hops
+for (const tc of [4.3, 4.9, 5.5, 6.25, 7.68, 8.44, 8.94, 9.26, 9.7]) pop(tc - 0.05, 900, 450, 0.13); // cards (on each "projet")
+for (let n = 0; n < 4; n++) for (let i = 0; i < 3; i++) for (const o of [0, 0.6]) { const tc = 11 + 1.5 * (n + o - i / 3); if (tc > 10.8 && tc < 13.0) pop(tc, 520, 360, 0.035); } // juggling catches
+whoosh(13.2); pop(14.85, 300, 180, 0.12);                                                  // camera / REC off
+whoosh(18.9, 0.9, 0.04); pop(20.3, 700, 1000, 0.14);                                       // disappear / reappear
+ding(20.5);                                                                                // idea
+whoosh(22.95, 0.9, 0.04); ding(23.6, 0.05);                                                // frame
+pop(25.5, 800, 500, 0.15); pop(27.3, 1000, 700, 0.15);                                     // bubble, heart
+for (const tr of [0.0, 13.1, 17.5, 24.9]) whoosh(tr, 0.5, 0.06);                          // runs
+for (const [th, d] of [[0.95, 0.35], [16.25, 0.3], [20.5, 0.4], [23.0, 0.35], [27.3, 0.35], [27.7, 0.3], [28.9, 0.35]]) { pop(th, 300, 520, 0.05); pop(th + d, 260, 160, 0.07); } // hops
 // simple stereo delay for space
 const d = Math.floor(0.47 * SR);
 for (let i = d; i < N; i++) { Lc[i] += Rc[i - d] * 0.22; Rc[i] += Lc[i - d] * 0.22; }
