@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="260" viewBox="0 0 490 130">
+    <g transform="translate(0,5)">
+    <path d="M30 12 H90 a24 24 0 0 1 24 24 V70 a24 24 0 0 1 -24 24 H48 L26 112 L30 92 a24 24 0 0 1 -24 -22 V36 a24 24 0 0 1 24 -24 Z" fill="#2563C9"/>
+    <rect x="54.5" y="26" width="11" height="54" rx="3" fill="#FFFFFF"/>
+    <rect x="40" y="40" width="40" height="11" rx="3" fill="#FFFFFF"/></g>
+    <text x="140" y="74" font-family="Poppins" font-size="44" fill="#163E86"><tspan font-weight="300">Ma</tspan><tspan font-weight="600" dx="10">Paroisse</tspan></text>
+    <text x="142" y="104" font-family="Poppins" font-weight="500" font-size="13.5" letter-spacing="2" fill="#7E93BC">VOTRE COMMUNAUTÉ, CONNECTÉE</text>
+  </svg>

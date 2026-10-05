@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="260" viewBox="0 0 490 130">
+    <g transform="translate(0,5)">
+    <path d="M60 6 C33 6 15 25 15 50 C15 80 60 114 60 114 C60 114 105 80 105 50 C105 25 87 6 60 6 Z" fill="#2563C9"/>
+    <circle cx="60" cy="50" r="27" fill="#FFFFFF"/>
+    <rect x="56.5" y="33" width="7" height="34" rx="2" fill="#2563C9"/>
+    <rect x="47" y="43" width="26" height="7" rx="2" fill="#2563C9"/>
+    <path d="M30 108 Q60 98 90 108" stroke="#2563C9" stroke-width="4" fill="none" stroke-linecap="round" opacity=".35"/></g>
+    <text x="140" y="74" font-family="Poppins" font-size="44" fill="#163E86"><tspan font-weight="300">Ma</tspan><tspan font-weight="600" dx="10">Paroisse</tspan></text>
+    <text x="142" y="104" font-family="Poppins" font-weight="500" font-size="13.5" letter-spacing="2" fill="#7E93BC">VOTRE COMMUNAUTÉ, CONNECTÉE</text>
+  </svg>
