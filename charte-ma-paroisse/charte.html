@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charte Ma Paroisse</title>
+<style>
+@font-face{font-family:Fraunces;font-weight:100 900;src:url(fraunces.woff2) format('woff2')}
+@font-face{font-family:Inter;font-weight:100 900;src:url(inter.woff2) format('woff2')}
+:root{
+  --blanc:#FFFFFF; --nuage:#F5F8FC; --ciel:#DCE8FA; --marie:#1F5FC4; --nuit:#0F2A5C; --ardoise:#5B6B82; --trait:#E4EAF3;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--blanc);color:var(--nuit);font-family:Inter,sans-serif;font-size:16px;line-height:1.6}
+.wrap{max-width:1240px;margin:0 auto;padding:0 56px}
+section{padding:72px 0;border-top:1px solid var(--trait)}
+.kicker{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--marie);margin:0 0 10px}
+h1,h2,h3{font-family:Fraunces,serif;font-weight:600;margin:0;letter-spacing:-.01em}
+h2{font-size:38px;line-height:1.15;margin-bottom:12px}
+.lead{color:var(--ardoise);max-width:720px;margin:0 0 40px;font-size:17px}
+.grid{display:grid;gap:24px}
+.card{background:var(--blanc);border:1px solid var(--trait);border-radius:20px;padding:28px}
+.soft{background:var(--nuage);border-color:transparent}
+.cap{font-size:13px;color:var(--ardoise);margin-top:12px}
+
+/* cover */
+.cover{padding:96px 0 80px;border:0}
+.cover h1{font-size:64px;line-height:1.05;margin:26px 0 18px}
+.cover p{color:var(--ardoise);font-size:19px;max-width:640px;margin:0}
+
+/* colours */
+.sw{border-radius:18px;height:150px;border:1px solid var(--trait);display:flex;align-items:flex-end;padding:16px;font-size:13px;font-weight:600}
+.ratio{display:flex;height:64px;border-radius:16px;overflow:hidden;border:1px solid var(--trait);margin-top:28px}
+.ratio div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+
+/* type */
+.spec{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--trait)}
+.spec small{color:var(--ardoise);font-size:13px;line-height:1.5}
+
+/* components */
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 15px Inter;border-radius:12px;padding:13px 22px;border:1.5px solid var(--marie)}
+.btn.p{background:var(--marie);color:#fff}
+.btn.s{background:#fff;color:var(--marie)}
+.btn.t{border-color:transparent;color:var(--marie);padding-left:4px}
+.badge{display:inline-block;background:var(--ciel);color:var(--marie);font-size:12px;font-weight:600;border-radius:999px;padding:4px 12px}
+.input{display:flex;align-items:center;gap:10px;border:1.5px solid var(--trait);border-radius:12px;padding:13px 16px;color:var(--ardoise);font-size:15px;background:#fff}
+.mass{display:flex;gap:16px;align-items:center;padding:18px;border:1px solid var(--trait);border-radius:16px;background:#fff}
+.mass .t{width:64px;text-align:center;border-right:1px solid var(--trait);padding-right:14px}
+.mass .t b{display:block;font:600 22px Fraunces;color:var(--nuit)}
+.mass .t span{font-size:12px;color:var(--ardoise);text-transform:uppercase;letter-spacing:.08em}
+.ico{width:28px;height:28px;stroke:var(--marie);stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* rules */
+.do,.dont{border-radius:18px;padding:24px;border:1px solid var(--trait)}
+.do h4,.dont h4{margin:0 0 10px;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.do h4{color:#1E7A4F}.dont h4{color:#B3261E}
+.do ul,.dont ul{margin:0;padding-left:18px;color:var(--ardoise);font-size:15px}
+
+/* mockups */
+.phone{width:330px;border:10px solid #EEF2F8;border-radius:44px;background:#fff;overflow:hidden;box-shadow:0 30px 60px rgba(15,42,92,.08)}
+.phone .in{padding:22px 20px 0}
+.tab{display:flex;justify-content:space-around;border-top:1px solid var(--trait);padding:12px 0 16px;margin-top:22px;font-size:11px;color:var(--ardoise)}
+.tab div{display:flex;flex-direction:column;align-items:center;gap:4px}
+.tab .on{color:var(--marie);font-weight:600}
+.desk{flex:1;border:1px solid var(--trait);border-radius:20px;background:#fff;overflow:hidden;box-shadow:0 30px 60px rgba(15,42,92,.06)}
+.bar{display:flex;gap:7px;padding:12px 16px;border-bottom:1px solid var(--trait);background:var(--nuage)}
+.bar i{width:10px;height:10px;border-radius:50%;background:#D6DEEA}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 36px;font-size:14px;color:var(--ardoise)}
+.nav span{margin-left:26px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- the mark: an open church doorway with a cross -->
+    <symbol id="mark" viewBox="0 0 100 120">
+      <path d="M17 114 V62 C17 40 30 22 50 7 C70 22 83 40 83 62 V114" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M50 38 V88 M36 56 H64" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.3"/><path d="M3 19.5c.6-3.4 3-5.2 6-5.2s5.4 1.8 6 5.2"/><path d="M15.5 5.6a3.2 3.2 0 0 1 0 6M17.6 14.6c1.8.6 3 2.2 3.4 4.9"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M10 20v-5h4v5"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <!-- COVER -->
+  <section class="cover">
+    <svg width="64" height="77" style="color:var(--marie)"><use href="#mark"/></svg>
+    <h1>Ma Paroisse<br><span style="color:var(--marie)">Charte graphique</span></h1>
+    <p>Une identité lumineuse et accueillante : le blanc occupe l’espace, le bleu guide le regard. Simple à lire pour tous les âges, sereine, moderne sans être froide.</p>
+  </section>
+
+  <!-- 01 LOGO -->
+  <section>
+    <p class="kicker">01 · Logo</p>
+    <h2>Une porte ouverte</h2>
+    <p class="lead">Le symbole dessine l’arc brisé d’une porte d’église gothique, ouverte vers le bas, avec la croix en son centre : la paroisse qui accueille. Tracé au trait, il laisse le blanc respirer à l’intérieur au lieu de remplir une forme pleine.</p>
+
+    <div class="grid" style="grid-template-columns:1.6fr 1fr">
+      <div class="card" style="display:flex;align-items:center;justify-content:center;height:300px">
+        <div style="display:flex;align-items:center;gap:26px">
+          <svg width="96" height="115" style="color:var(--marie)"><use href="#mark"/></svg>
+          <div>
+            <div style="font:400 66px/1 Fraunces;letter-spacing:-.02em"><span style="color:var(--marie)">Ma</span> <span style="font-weight:600">Paroisse</span></div>
+            <div style="font:500 13px Inter;letter-spacing:.24em;color:var(--ardoise);margin-top:14px">VOTRE COMMUNAUTÉ, CONNECTÉE</div>
+          </div>
+        </div>
+      </div>
+      <div class="grid" style="grid-template-rows:1fr 1fr">
+        <div class="card soft" style="display:flex;align-items:center;justify-content:center;gap:16px">
+          <svg width="44" height="53" style="color:var(--nuit)"><use href="#mark"/></svg>
+          <div style="font:600 32px Fraunces;color:var(--nuit)">Ma Paroisse</div>
+        </div>
+        <div class="card" style="background:var(--marie);border:0;display:flex;align-items:center;justify-content:center;gap:16px">
+          <svg width="44" height="53" style="color:#fff"><use href="#mark"/></svg>
+          <div style="font:600 32px Fraunces;color:#fff">Ma Paroisse</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(4,1fr);margin-top:24px">
+      <div class="card" style="text-align:center">
+        <div style="width:96px;height:96px;margin:0 auto;border-radius:24px;background:#fff;border:1px solid var(--trait);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(15,42,92,.08)">
+          <svg width="46" height="55" style="color:var(--marie)"><use href="#mark"/></svg></div>
+        <div class="cap">Icône d’application : fond blanc</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="display:flex;gap:18px;justify-content:center;align-items:flex-end;height:96px">
+          <svg width="16" height="19" style="color:var(--marie)"><use href="#mark"/></svg>
+          <svg width="32" height="38" style="color:var(--marie)"><use href="#mark"/></svg>
+          <svg width="56" height="67" style="color:var(--marie)"><use href="#mark"/></svg>
+        </div>
+        <div class="cap">Taille minimale : 16 px de large</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="height:96px;display:flex;align-items:center;justify-content:center">
+          <div style="border:1.5px dashed var(--ciel);padding:14px;border-radius:8px"><svg width="44" height="53" style="color:var(--marie)"><use href="#mark"/></svg></div>
+        </div>
+        <div class="cap">Zone de protection : ⅓ de la hauteur du symbole tout autour</div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="height:96px;display:flex;align-items:center;justify-content:center;gap:18px">
+          <svg width="40" height="48" style="color:#C8A45C;opacity:.9"><use href="#mark"/></svg>
+          <svg width="40" height="48" style="color:var(--marie);transform:skewX(-14deg)"><use href="#mark"/></svg>
+          <svg width="40" height="48" style="color:var(--marie);filter:drop-shadow(3px 4px 2px rgba(0,0,0,.35))"><use href="#mark"/></svg>
+        </div>
+        <div class="cap">À éviter : autre couleur, déformation, ombre</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 COLOURS -->
+  <section>
+    <p class="kicker">02 · Couleurs</p>
+    <h2>Le blanc d’abord</h2>
+    <p class="lead">Le blanc et le blanc nuage couvrent au moins 85 % de chaque écran ou document. Le bleu Marie est réservé aux actions, aux liens et au logo. Le bleu nuit sert au texte.</p>
+    <div class="grid" style="grid-template-columns:repeat(6,1fr)">
+      <div><div class="sw" style="background:#fff">Blanc</div><div class="cap"><b>#FFFFFF</b><br>Fond principal · 75 %</div></div>
+      <div><div class="sw" style="background:var(--nuage)">Nuage</div><div class="cap"><b>#F5F8FC</b><br>Fonds de sections · 12 %</div></div>
+      <div><div class="sw" style="background:var(--ciel)">Ciel</div><div class="cap"><b>#DCE8FA</b><br>Badges, survols, sélection</div></div>
+      <div><div class="sw" style="background:var(--marie);color:#fff;border:0">Bleu Marie</div><div class="cap"><b>#1F5FC4</b><br>Actions, liens, logo · 8 %</div></div>
+      <div><div class="sw" style="background:var(--nuit);color:#fff;border:0">Bleu nuit</div><div class="cap"><b>#0F2A5C</b><br>Titres et texte</div></div>
+      <div><div class="sw" style="background:var(--ardoise);color:#fff;border:0">Ardoise</div><div class="cap"><b>#5B6B82</b><br>Texte secondaire</div></div>
+    </div>
+    <div class="ratio">
+      <div style="width:75%;background:#fff;color:var(--ardoise)">Blanc 75 %</div>
+      <div style="width:12%;background:var(--nuage);color:var(--ardoise)">Nuage 12 %</div>
+      <div style="width:8%;background:var(--marie);color:#fff">Bleu 8 %</div>
+      <div style="width:4%;background:var(--nuit)"></div>
+      <div style="width:1%;background:var(--ciel)"></div>
+    </div>
+    <div class="cap">Contrastes vérifiés (WCAG AA) : bleu Marie sur blanc 5,9:1 · bleu nuit sur blanc 14,6:1 · ardoise sur blanc 5,4:1.</div>
+  </section>
+
+  <!-- 03 TYPE -->
+  <section>
+    <p class="kicker">03 · Typographie</p>
+    <h2>Fraunces &amp; Inter</h2>
+    <p class="lead"><b>Fraunces</b>, un serif chaleureux aux formes douces, donne aux titres une touche classique et spirituelle. <b>Inter</b>, conçue pour les écrans, rend les textes, horaires et boutons parfaitement lisibles, même en petit. Les deux sont gratuites sur Google Fonts.</p>
+    <div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:30px">
+      <div class="card soft"><div style="font:600 92px/1 Fraunces">Aa</div><div style="font:600 20px Fraunces;margin-top:14px">Fraunces · Titres</div><div class="cap">Regular 400 · Semibold 600</div></div>
+      <div class="card soft"><div style="font:500 92px/1 Inter;letter-spacing:-.03em">Aa</div><div style="font:600 18px Inter;margin-top:14px">Inter · Textes &amp; interface</div><div class="cap">Regular 400 · Medium 500 · Semibold 600</div></div>
+    </div>
+    <div class="spec"><small>Titre principal<br>Fraunces 600 · 48 px / 1,1</small><div style="font:600 48px/1.1 Fraunces">Bienvenue dans votre paroisse</div></div>
+    <div class="spec"><small>Titre de section<br>Fraunces 600 · 32 px / 1,2</small><div style="font:600 32px/1.2 Fraunces">Prochaines célébrations</div></div>
+    <div class="spec"><small>Sous-titre<br>Inter 600 · 20 px / 1,4</small><div style="font:600 20px/1.4 Inter">Messe dominicale à Saint-Pierre</div></div>
+    <div class="spec"><small>Texte courant<br>Inter 400 · 17 px / 1,6</small><div style="font:400 17px/1.6 Inter;max-width:720px">Retrouvez les horaires des messes, l’agenda de la communauté et les annonces de votre paroisse, au même endroit.</div></div>
+    <div class="spec"><small>Étiquette<br>Inter 600 · 12 px · capitales</small><div style="font:600 12px Inter;letter-spacing:.14em;color:var(--marie)">CETTE SEMAINE</div></div>
+  </section>
+
+  <!-- 04 COMPONENTS -->
+  <section>
+    <p class="kicker">04 · Éléments d’interface</p>
+    <h2>Clair, aéré, arrondi</h2>
+    <p class="lead">Angles arrondis (12 px pour les boutons, 16 à 20 px pour les cartes), filets gris très clairs plutôt que des ombres, et beaucoup d’espace. Un seul bouton bleu plein par écran.</p>
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div class="card">
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+          <span class="btn p">Voir les horaires</span><span class="btn s">S’inscrire</span><span class="btn t">En savoir plus →</span>
+        </div>
+        <div class="input" style="margin-top:24px"><svg class="ico" style="width:20px;height:20px;stroke:var(--ardoise)"><use href="#i-search"/></svg>Rechercher une paroisse, une ville…</div>
+        <div style="display:flex;gap:10px;margin-top:22px"><span class="badge">Aujourd’hui</span><span class="badge">Messe</span><span class="badge">Catéchisme</span></div>
+        <div style="display:flex;gap:26px;margin-top:28px">
+          <svg class="ico"><use href="#i-cal"/></svg><svg class="ico"><use href="#i-clock"/></svg><svg class="ico"><use href="#i-pin"/></svg><svg class="ico"><use href="#i-users"/></svg><svg class="ico"><use href="#i-heart"/></svg><svg class="ico"><use href="#i-bell"/></svg>
+        </div>
+        <div class="cap">Icônes au trait, 1,75 px, coins arrondis, toujours en bleu Marie ou ardoise.</div>
+      </div>
+      <div class="grid" style="gap:14px">
+        <div class="mass"><div class="t"><b>10:30</b><span>Dim.</span></div><div style="flex:1"><div style="font-weight:600">Messe dominicale</div><div style="font-size:14px;color:var(--ardoise)">Église Saint-Pierre</div></div><span class="badge">Aujourd’hui</span></div>
+        <div class="mass"><div class="t"><b>18:00</b><span>Mar.</span></div><div style="flex:1"><div style="font-weight:600">Adoration</div><div style="font-size:14px;color:var(--ardoise)">Chapelle Notre-Dame</div></div></div>
+        <div class="mass"><div class="t"><b>14:00</b><span>Sam.</span></div><div style="flex:1"><div style="font-weight:600">Rencontre des jeunes</div><div style="font-size:14px;color:var(--ardoise)">Salle paroissiale</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 IN USE -->
+  <section>
+    <p class="kicker">05 · En situation</p>
+    <h2>Sur le site et sur mobile</h2>
+    <p class="lead">Un exemple d’application de la charte : grand fond blanc, titres en Fraunces, une seule touche de bleu forte par écran.</p>
+    <div style="display:flex;gap:36px;align-items:flex-start">
+      <div class="desk">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div class="nav">
+          <div style="display:flex;align-items:center;gap:10px;color:var(--nuit)"><svg width="24" height="29" style="color:var(--marie)"><use href="#mark"/></svg><b style="font:600 20px Fraunces">Ma Paroisse</b></div>
+          <div><span>Horaires</span><span>Agenda</span><span>Annonces</span><span>Dons</span><span class="btn s" style="padding:8px 16px;font-size:13px;margin-left:26px">Se connecter</span></div>
+        </div>
+        <div style="padding:56px 36px 50px;display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center">
+          <div>
+            <p class="kicker">Bienvenue</p>
+            <div style="font:600 46px/1.08 Fraunces">Votre paroisse, toujours à portée de main.</div>
+            <p style="color:var(--ardoise);margin:18px 0 26px;font-size:16px">Horaires des messes, agenda, annonces et vie de la communauté, au même endroit.</p>
+            <span class="btn p">Trouver ma paroisse</span> <span class="btn t">Découvrir →</span>
+          </div>
+          <div style="background:var(--nuage);border-radius:24px;height:280px;display:flex;align-items:center;justify-content:center">
+            <svg width="150" height="180" style="color:var(--ciel)"><use href="#mark"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="in">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <svg width="22" height="26" style="color:var(--marie)"><use href="#mark"/></svg>
+            <svg class="ico" style="width:24px;height:24px;stroke:var(--nuit)"><use href="#i-bell"/></svg>
+          </div>
+          <div style="font:600 27px/1.15 Fraunces;margin:22px 0 4px">Bonjour,</div>
+          <div style="color:var(--ardoise);font-size:14px">Paroisse Saint-Pierre</div>
+          <div class="input" style="margin:18px 0;padding:11px 14px;font-size:14px"><svg class="ico" style="width:18px;height:18px;stroke:var(--ardoise)"><use href="#i-search"/></svg>Rechercher…</div>
+          <p class="kicker" style="font-size:11px">Cette semaine</p>
+          <div class="grid" style="gap:10px">
+            <div class="mass" style="padding:14px"><div class="t" style="width:54px"><b style="font-size:19px">10:30</b><span>Dim.</span></div><div><div style="font-weight:600;font-size:14px">Messe dominicale</div><div style="font-size:12px;color:var(--ardoise)">Église Saint-Pierre</div></div></div>
+            <div class="mass" style="padding:14px"><div class="t" style="width:54px"><b style="font-size:19px">18:00</b><span>Mar.</span></div><div><div style="font-weight:600;font-size:14px">Adoration</div><div style="font-size:12px;color:var(--ardoise)">Chapelle Notre-Dame</div></div></div>
+          </div>
+          <span class="btn p" style="width:100%;justify-content:center;margin-top:16px">Voir tout l’agenda</span>
+        </div>
+        <div class="tab">
+          <div class="on"><svg class="ico" style="width:22px;height:22px"><use href="#i-home"/></svg>Accueil</div>
+          <div><svg class="ico" style="width:22px;height:22px;stroke:var(--ardoise)"><use href="#i-cal"/></svg>Agenda</div>
+          <div><svg class="ico" style="width:22px;height:22px;stroke:var(--ardoise)"><use href="#i-users"/></svg>Groupes</div>
+          <div><svg class="ico" style="width:22px;height:22px;stroke:var(--ardoise)"><use href="#i-heart"/></svg>Dons</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 RULES -->
+  <section>
+    <p class="kicker">06 · Règles</p>
+    <h2>À faire, à éviter</h2>
+    <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:30px">
+      <div class="do"><h4>À faire</h4><ul>
+        <li>Garder au moins 85 % de blanc et de nuage sur chaque écran.</li>
+        <li>Utiliser le bleu Marie seulement pour ce qui se clique ou guide.</li>
+        <li>Laisser de l’espace : 24 à 32 px entre les blocs, 72 px entre les sections.</li>
+        <li>Écrire les titres en Fraunces et tout le reste en Inter.</li>
+        <li>Préférer de vraies photos de la communauté, lumineuses et naturelles.</li>
+      </ul></div>
+      <div class="dont"><h4>À éviter</h4><ul>
+        <li>De grands fonds bleus pleins (bandeaux, pages entières).</li>
+        <li>Les dégradés, les ombres fortes, les textures.</li>
+        <li>Plus d’un bouton bleu plein dans le même écran.</li>
+        <li>D’autres polices, ou le texte courant en Fraunces.</li>
+        <li>Les images d’illustration génériques ou trop sombres.</li>
+      </ul></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
